@@ -6,7 +6,6 @@
   <title>Disen Ranvidu | Cyber Security Specialist</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Exo+2:wght@300;400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://s.pageclip.co/v1/pageclip.css" media="screen">
   <style>
     /* Base Styles */
     :root {
@@ -1020,8 +1019,8 @@
       }
     }
 
-    /* Pageclip integration styles */
-   .form-feedback {
+    /* Form feedback messages */
+    .form-feedback {
       display: none;
       padding: 15px;
       border-radius: 8px;
@@ -1049,29 +1048,32 @@
       margin-right: 10px;
       font-size: 1.3rem;
     }
-    
-    /* Submit button spinner */
-    .pageclip-form__submit .spinner {
+
+    /* Loading spinner */
+    .spinner {
+      display: none;
+      width: 24px;
+      height: 24px;
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: var(--primary);
+      animation: spin 1s linear infinite;
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    }
-    
-    .pageclip-form__submit--loading span {
-      opacity: 0;
-    }
-    
-    .pageclip-form__submit--loading .spinner {
-      opacity: 1;
-      animation: spin 1s linear infinite;
     }
     
     @keyframes spin {
-      0% { transform: translate(-50%, -50%) rotate(0deg); }
-      100% { transform: translate(-50%, -50%) rotate(360deg); }
+      to { transform: translate(-50%, -50%) rotate(360deg); }
+    }
+    
+    .loading .spinner {
+      display: block;
+    }
+    
+    .loading .submit-text {
+      opacity: 0;
     }
   </style>
 </head>
@@ -1466,8 +1468,7 @@
         </div>
         
         <div class="contact-form fade-in">
-          <!-- Updated Form with Pageclip Integration -->
-          <form action="https://send.pageclip.co/ox14gJraQQeWj5gQIMgrWAajQAH7xXvC" class="pageclip-form" method="post">
+          <form id="contactForm">
             <div class="form-group">
               <label for="name">Full Name</label>
               <input type="text" id="name" name="name" required>
@@ -1488,23 +1489,21 @@
               <textarea id="message" name="message" required></textarea>
             </div>
             
-            <button type="submit" class="submit-btn pageclip-form__submit">
-              <span>SEND MESSAGE</span>
-              <div class="spinner">
-                <i class="fas fa-circle-notch"></i>
-              </div>
+            <button type="submit" class="submit-btn">
+              <span class="submit-text">SEND MESSAGE</span>
+              <div class="spinner"></div>
             </button>
           </form>
           
-          <!-- Success and Error Messages -->
-          <div class="form-feedback success-message">
+          <!-- Form Feedback Messages -->
+          <div id="success-message" class="form-feedback success-message">
             <i class="fas fa-check-circle"></i> 
-            <span class="message">Message sent successfully! I'll get back to you soon.</span>
+            <span>Email client opened! Please send your message.</span>
           </div>
           
-          <div class="form-feedback error-message">
+          <div id="error-message" class="form-feedback error-message">
             <i class="fas fa-exclamation-circle"></i> 
-            <span class="message">There was an error sending your message. Please try again.</span>
+            <span>Please fill in all required fields.</span>
           </div>
         </div>
       </div>
@@ -1537,58 +1536,112 @@
   </footer>
 
   <script>
-    // Your existing JavaScript remains unchanged
-    // ... (navbar scroll, mobile menu, scroll animations, etc.)
-    
-    // Initialize Pageclip form after DOM is loaded
-    document.addEventListener('DOMContentLoaded', function() {
-      // Pageclip form initialization
-      if (typeof Pageclip !== 'undefined') {
-        // Initialize all forms with the class 'pageclip-form'
-        Pageclip.init();
-        
-        // Add event listeners to forms
-        document.querySelectorAll('.pageclip-form').forEach(function(form) {
-          // Show success message
-          form.addEventListener('pageclip:success', function() {
-            const successMsg = form.nextElementSibling;
-            const errorMsg = successMsg.nextElementSibling;
-            
-            // Hide error message if visible
-            errorMsg.style.display = 'none';
-            
-            // Show success message
-            successMsg.style.display = 'block';
-            
-            // Reset form after 3 seconds
-            setTimeout(function() {
-              form.reset();
-              successMsg.style.display = 'none';
-            }, 5000);
-          });
-          
-          // Show error message
-          form.addEventListener('pageclip:error', function() {
-            const successMsg = form.nextElementSibling;
-            const errorMsg = successMsg.nextElementSibling;
-            
-            // Hide success message if visible
-            successMsg.style.display = 'none';
-            
-            // Show error message
-            errorMsg.style.display = 'block';
-            
-            // Hide error message after 5 seconds
-            setTimeout(function() {
-              errorMsg.style.display = 'none';
-            }, 5000);
-          });
-        });
+    // Navbar scroll effect
+    window.addEventListener('scroll', function() {
+      const navbar = document.querySelector('.navbar');
+      if (window.scrollY > 50) {
+        navbar.classList.add('scrolled');
       } else {
-        console.error('Pageclip script not loaded!');
+        navbar.classList.remove('scrolled');
       }
     });
+    
+    // Mobile menu toggle
+    const hamburger = document.querySelector('.hamburger');
+    const navLinks = document.querySelector('.nav-links');
+    
+    hamburger.addEventListener('click', () => {
+      navLinks.classList.toggle('active');
+    });
+    
+    // Close mobile menu when clicking a link
+    document.querySelectorAll('.nav-links a').forEach(link => {
+      link.addEventListener('click', () => {
+        navLinks.classList.remove('active');
+      });
+    });
+    
+    // Scroll animation
+    const fadeElements = document.querySelectorAll('.fade-in');
+    
+    const appearOptions = {
+      threshold: 0.15,
+      rootMargin: "0px 0px -100px 0px"
+    };
+    
+    const appearOnScroll = new IntersectionObserver(function(entries, appearOnScroll) {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) {
+          return;
+        } else {
+          entry.target.classList.add('appear');
+          appearOnScroll.unobserve(entry.target);
+        }
+      });
+    }, appearOptions);
+    
+    fadeElements.forEach(element => {
+      appearOnScroll.observe(element);
+    });
+    
+    // Initialize skill bars
+    document.addEventListener('DOMContentLoaded', function() {
+      const skillBars = document.querySelectorAll('.skill-progress');
+      skillBars.forEach(bar => {
+        const width = bar.style.width;
+        bar.style.width = '0';
+        setTimeout(() => {
+          bar.style.width = width;
+        }, 500);
+      });
+    });
+
+    // Contact Form Submission with mailto
+    document.getElementById('contactForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      // Get form values
+      const name = document.getElementById('name').value;
+      const email = document.getElementById('email').value;
+      const subject = document.getElementById('subject').value;
+      const message = document.getElementById('message').value;
+      
+      // Validate form
+      if (!name || !email || !subject || !message) {
+        document.getElementById('error-message').style.display = 'block';
+        document.getElementById('success-message').style.display = 'none';
+        return;
+      }
+      
+      // Show loading state
+      const submitBtn = document.querySelector('.submit-btn');
+      submitBtn.classList.add('loading');
+      
+      // Construct mailto URL
+      const emailBody = `Name: ${name}%0D%0AEmail: ${email}%0D%0A%0D%0A${message}`;
+      const mailtoUrl = `mailto:ranvidud@gmail.com?subject=${encodeURIComponent(subject)}&body=${emailBody}`;
+      
+      // Simulate delay for UX
+      setTimeout(() => {
+        // Open email client
+        window.location.href = mailtoUrl;
+        
+        // Show success message
+        document.getElementById('success-message').style.display = 'block';
+        document.getElementById('error-message').style.display = 'none';
+        
+        // Reset form
+        this.reset();
+        
+        // Remove loading state
+        submitBtn.classList.remove('loading');
+        
+        // Hide success message after 5 seconds
+        setTimeout(() => {
+          document.getElementById('success-message').style.display = 'none';
+        }, 5000);
+      }, 1500);
+    });
   </script>
-  <script src="https://s.pageclip.co/v1/pageclip.js" charset="utf-8"></script>
 </body>
 </html>
