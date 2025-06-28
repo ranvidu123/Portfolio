@@ -6,6 +6,7 @@
   <title>Disen Ranvidu | Cyber Security Specialist</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Exo+2:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://s.pageclip.co/v1/pageclip.css" media="screen">
   <style>
     /* Base Styles */
     :root {
@@ -1018,6 +1019,50 @@
         font-size: 1.5rem;
       }
     }
+
+    /* Pageclip integration styles */
+    .pageclip-form__success {
+      display: none;
+      background: rgba(0, 255, 157, 0.1);
+      padding: 15px;
+      border-radius: 8px;
+      margin-top: 20px;
+      text-align: center;
+      color: var(--primary);
+      border: 1px solid var(--primary);
+    }
+    
+    .pageclip-form__error {
+      display: none;
+      background: rgba(255, 0, 85, 0.1);
+      padding: 15px;
+      border-radius: 8px;
+      margin-top: 20px;
+      text-align: center;
+      color: #ff0055;
+      border: 1px solid #ff0055;
+    }
+    
+    .pageclip-form__submit {
+      position: relative;
+    }
+    
+    .pageclip-form__submit .pageclip-form__submit-spinner {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    
+    .pageclip-form__submit--loading span {
+      opacity: 0;
+    }
+    
+    .pageclip-form__submit--loading .pageclip-form__submit-spinner {
+      opacity: 1;
+    }
   </style>
 </head>
 <body>
@@ -1411,7 +1456,8 @@
         </div>
         
         <div class="contact-form fade-in">
-          <form action="submit_form.php" method="POST">
+          <!-- Pageclip Form Integration -->
+          <form action="https://send.pageclip.co/ox14gJraQQeWj5gQIMgrWAajQAH7xXvC" class="pageclip-form" method="post">
             <div class="form-group">
               <label for="name">Full Name</label>
               <input type="text" id="name" name="name" required>
@@ -1432,8 +1478,22 @@
               <textarea id="message" name="message" required></textarea>
             </div>
             
-            <button type="submit" class="submit-btn">SEND MESSAGE</button>
+            <button type="submit" class="submit-btn pageclip-form__submit">
+              <span>SEND MESSAGE</span>
+              <svg class="pageclip-form__submit-spinner" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12,4a8,8,0,0,1,7.89,6.7A1.53,1.53,0,0,0,21.38,12h0a1.5,1.5,0,0,0,1.48-1.75,11,11,0,0,0-21.72,0A1.5,1.5,0,0,0,2.62,12h0a1.53,1.53,0,0,0,1.49-1.3A8,8,0,0,1,12,4Z"></path>
+              </svg>
+            </button>
           </form>
+          
+          <!-- Success and Error Messages -->
+          <div class="pageclip-form__success">
+            <i class="fas fa-check-circle"></i> Message sent successfully! I'll get back to you soon.
+          </div>
+          
+          <div class="pageclip-form__error">
+            <i class="fas fa-exclamation-circle"></i> There was an error sending your message. Please try again.
+          </div>
         </div>
       </div>
     </div>
@@ -1525,5 +1585,6 @@
       });
     });
   </script>
+  <script src="https://s.pageclip.co/v1/pageclip.js" charset="utf-8"></script>
 </body>
 </html>
